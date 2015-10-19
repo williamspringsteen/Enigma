@@ -72,23 +72,48 @@
 #.PHONY: all
 #
 #.PHONE: clean	
-
+#
+#CC = g++
+#CFLAGS = -Wall -Werror -pedantic -g
+#
+#enigma: Main.o Mapper.o Rotor.o Reflector.o Plugboard.o
+#
+#Main.o: Mapper.hpp Rotor.hpp Reflector.hpp Plugboard.hpp
+#
+#Mapper.o: Mapper.hpp
+#
+#Rotor.o: Mapper.hpp Rotor.hpp
+#
+#Reflector.o: Mapper.hpp Reflector.hpp
+#
+#Plugboard.o: Mapper.hpp Plugboard.hpp
+#
+#clean:
+#	$(RM) enigma *.o *~
+#
+#.PHONY: clean
 CC = g++
-CFLAGS = -Wall -Werror -pedantic -g
+CFLAGS = -g -Wall -Werror -pedantic
 
-enigma: Main.o Mapper.o Rotor.o Reflector.o Plugboard.o
+enigma: Main.o Rotor.o Reflector.o Plugboard.o Mapper.o
+	$(CC) $(CFLAGS) $^ -o enigma
 
-Main.o: Mapper.hpp Rotor.hpp Reflector.hpp Plugboard.hpp
+Main.o: Main.cpp Plugboard.hpp Reflector.hpp Rotor.hpp
+	$(CC) $(CFLAGS) -c $<
 
-Mapper.o: Mapper.hpp
+Rotor.o: Rotor.cpp Rotor.hpp Mapper.hpp
+	$(CC) $(CFLAGS) -c $<
 
-Rotor.o: Mapper.hpp Rotor.hpp
+Reflector.o: Reflector.cpp Reflector.hpp Mapper.hpp
+	$(CC) $(CFLAGS) -c $<
 
-Reflector.o: Mapper.hpp Reflector.hpp
+Plugboard.o: Plugboard.cpp Plugboard.hpp Mapper.hpp
+	$(CC) $(CFLAGS) -c $<
 
-Plugboard.o: Mapper.hpp Plugboard.hpp
+Mapper.o: Mapper.cpp Mapper.hpp
+	$(CC) $(CFLAGS) -c $<
 
 clean:
-	$(RM) enigma *.o *~
+	rm -rf enigma *.o
 
 .PHONY: clean

@@ -2,8 +2,6 @@
 #include "Plugboard.hpp"
 #include "Reflector.hpp"
 #include "Rotor.hpp"
-#include "Plugboard.hpp"
-#include "Reflector.hpp"
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
@@ -61,7 +59,7 @@ int main(int argc, char **argv) {                      //Need to make a rotor ar
   char* plugboardFileName = argv[argc - 1];
 
   std::ifstream plugboardTestFile(plugboardFileName);
-  std::cout << plugboardTestFile.goodbit << std::endl<< plugboardTestFile.eofbit << std::endl<< plugboardTestFile.badbit << std::endl << plugboardTestFile.failbit << std::endl;
+  //std::cout << plugboardTestFile.goodbit << std::endl<< plugboardTestFile.eofbit << std::endl<< plugboardTestFile.badbit << std::endl << plugboardTestFile.failbit << std::endl;
   if (!plugboardTestFile.good()) {
     plugboardTestFile.close();
     std::cout << "Invalid plugboard file." << std::endl;
@@ -75,16 +73,21 @@ int main(int argc, char **argv) {                      //Need to make a rotor ar
 
   char letterToEncrypt;
   //cin >> ws;
-                     //'fclose(stdin)' will close stdin
-  while (true) {     //Change to 'while(is_open(stdin))' IF I CAN FIGURE OUT HOW TO DO THIS
-    cin >> letterToEncrypt;  //TODO: Check it is a capital letter or character to ignore
-    if (!((letterToEncrypt <= 'A' || letterToEncrypt >= 'Z') && !(letterToEncrypt == ' ' || letterToEncrypt == '\n' || letterToEncrypt == '\t' || letterToEncrypt == '\r'))) {
-      std::cout << "Invalid character." << std::endl;
-      return 1;
-    }
-    if (!isupper(letterToEncrypt) && !(letterToEncrypt == ' ' || letterToEncrypt == '\n' || letterToEncrypt == '\t' || letterToEncrypt == '\r')) {
-      std::cout << "Is a letter" << std::endl;
-    }
+                            //'fclose(stdin)' will close stdin
+  while (cin >> letterToEncrypt) {     //TODO: Change to 'while(is_open(stdin))' IF I CAN FIGURE OUT HOW TO DO THIS
+    //std::cout << "STILL ENCRYPTING " << letterToEncrypt << std::endl;
+    //cin >> letterToEncrypt;  //TODO: Check it is a capital letter or character to ignore
+//    if (cin.fail()) {
+//      return 1;
+//    }
+//    if (letterToEncrypt == '\0') { cout << "Closed" << std::endl; return 1; }
+//    if (!((letterToEncrypt <= 'A' || letterToEncrypt >= 'Z') && !(letterToEncrypt == ' ' || letterToEncrypt == '\n' || letterToEncrypt == '\t' || letterToEncrypt == '\r'))) {
+//      std::cout << "Invalid character1." << std::endl;
+//      return 1;
+//    }
+//    if (!isupper(letterToEncrypt) && !(letterToEncrypt == ' ' || letterToEncrypt == '\n' || letterToEncrypt == '\t' || letterToEncrypt == '\r')) {
+//      std::cout << "Is a letter" << std::endl;
+//    }
     if (!isupper(letterToEncrypt)) {
       if (!(letterToEncrypt == ' ')) {
         std::cout << "Invalid character." << std::endl;
@@ -120,7 +123,8 @@ int main(int argc, char **argv) {                      //Need to make a rotor ar
     letterToEncrypt = plugboard.map(letterToEncrypt);
 //    std::cout << "After second plugboard map: " << letterToEncrypt << std::endl;
 //    std::cout << "Encrypted to " << letterToEncrypt << std::endl; //TODO: Take out this text
-    std::cout << letterToEncrypt << std::endl;
+    std::cout << letterToEncrypt;
+
   }
 
   return 0;

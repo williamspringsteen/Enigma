@@ -14,10 +14,6 @@ Plugboard::Plugboard(char* plugboardFileName) {
   std::ifstream plugboardFile;
   plugboardFile.open(plugboardFileName);
 
-  if (!plugboardFile.good()) {
-    throw 1;
-  }
-
   for (int i = 0; i < LETTERS_IN_ALPHABET; i++) {
     plugboardMappings[i] = Mapper::convertIntToChar(i); //TODO: THIS IS WRONG, THIS WILL SWAP A AND B, C AND D, E AND F
   }
