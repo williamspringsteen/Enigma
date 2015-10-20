@@ -18,7 +18,9 @@ int main(int argc, char **argv) {
   assert(argc > 1); //Must have at least program name and plugboard file
 
   std::vector<Rotor> rotors(argc - 2, Rotor(0, argv[1]));
-  rotors[0].deleteArrays();
+  if (argc > 2) {
+    rotors[0].deleteArrays();
+  }
   rotors.clear();
 
   for (int i = 1; i < (argc - 1); i++) {
