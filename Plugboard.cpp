@@ -42,3 +42,7 @@ Plugboard::Plugboard(char* plugboardFileName) {
 char Plugboard::map(char input) {
   return this->plugboardMappings[Mapper::convertCharToInt(input)];
 }
+
+void Plugboard::deleteArrays() {
+  delete[] plugboardMappings;
+}

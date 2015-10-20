@@ -1,4 +1,3 @@
-// skeleton C++ file, you will need to edit this and other files to implement your enigma machine
 #include "Plugboard.hpp"
 #include "Reflector.hpp"
 #include "Rotor.hpp"
@@ -9,57 +8,36 @@
 #include <vector>
 #include <cctype>
 
+// Example arguments
 // ./enigma rotors/I.rot rotors/II.rot plugboard/null.pb
-// argc = 4     argv = ["enigma", "rotors/I.rot", "rotors/II.rot", "plugboard/null.pb"]
-using namespace std;
+// argc = 4
+// argv = ["enigma", "rotors/I.rot", "rotors/II.rot", "plugboard/null.pb"]
 
-int main(int argc, char **argv) {                      //Need to make a rotor array of size argc - 2, then use loop to fill it up :)
-                                                       //rotor0 = Rotor(0, argv[1])
-  //std::cout << "Hi" << std::endl;
+int main(int argc, char **argv) {
+
   assert(argc > 1); //Must have at least program name and plugboard file
 
-  //Rotor rotors[argc - 2];
   std::vector<Rotor> rotors(argc - 2, Rotor(0, argv[1]));
+  rotors[0].deleteArrays();
   rotors.clear();
 
-//  std::ifstream test;
-//  char* testName;
-//  for (int i = 1; i < (argc); i++) {
-//    testName = argv[i];
-//    test.open(testName);
-//    if (!test.good()) {
-//      test.close();
-//      std::cout << "YOU FAILED" << std::endl;
-//      return 1;
-//    }
-//    test.clear();
-//    test.close();
-//    test.clear();
-//  }
-//TODO: Invalid rotor file checking
-  //char** rotorFileNames = new char*[argc - 2];
-//  std::ifstream rotorTestFile(argv[1]);
   for (int i = 1; i < (argc - 1); i++) {
-//    std::ifstream rotorTestFile(argv[i]);
-//    if (rotorTestFile.good()) {
-//      rotorTestFile.close();
-//      std::cout << "Invalid rotor file in argument " << (i + 1) << "." << std::endl;
-//      return 1;
-//    }
-//    std::cout << argv[i] << "is a correct file name." << std::endl;
-//    rotorTestFile.close();
-    //argv[i] = rotorFileNames[i - 1];
-    //rotors[i - 1] = Rotor(i - 1, argv[i]);
+    //Check if any rotor file is invalid
+    std::ifstream rotorTestFile(argv[i]);
+    if (!rotorTestFile.good()) {
+      rotorTestFile.close();
+      std::cout << "Invalid rotor file in argument " << i << "." << std::endl;
+      return 1;
+    }
+    rotorTestFile.close();
+    //Rotor(0, argv[1]) is constructor for the 0th rotor, with filename argv[1]
     rotors.push_back(Rotor(i - 1, argv[i]));
-//    std::cout << "Just made Rotor(" << (i - 1) << ", " << argv[i] << ")" << std::endl;
   }
-
-
 
   char* plugboardFileName = argv[argc - 1];
 
+  //Check if plugboard file is invalid
   std::ifstream plugboardTestFile(plugboardFileName);
-  //std::cout << plugboardTestFile.goodbit << std::endl<< plugboardTestFile.eofbit << std::endl<< plugboardTestFile.badbit << std::endl << plugboardTestFile.failbit << std::endl;
   if (!plugboardTestFile.good()) {
     plugboardTestFile.close();
     std::cout << "Invalid plugboard file." << std::endl;
@@ -72,22 +50,14 @@ int main(int argc, char **argv) {                      //Need to make a rotor ar
   Reflector reflector;
 
   char letterToEncrypt;
-  //cin >> ws;
-                            //'fclose(stdin)' will close stdin
-  while (cin >> letterToEncrypt) {     //TODO: Change to 'while(is_open(stdin))' IF I CAN FIGURE OUT HOW TO DO THIS
-    //std::cout << "STILL ENCRYPTING " << letterToEncrypt << std::endl;
-    //cin >> letterToEncrypt;  //TODO: Check it is a capital letter or character to ignore
-//    if (cin.fail()) {
-//      return 1;
-//    }
-//    if (letterToEncrypt == '\0') { cout << "Closed" << std::endl; return 1; }
-//    if (!((letterToEncrypt <= 'A' || letterToEncrypt >= 'Z') && !(letterToEncrypt == ' ' || letterToEncrypt == '\n' || letterToEncrypt == '\t' || letterToEncrypt == '\r'))) {
-//      std::cout << "Invalid character1." << std::endl;
-//      return 1;
-//    }
-//    if (!isupper(letterToEncrypt) && !(letterToEncrypt == ' ' || letterToEncrypt == '\n' || letterToEncrypt == '\t' || letterToEncrypt == '\r')) {
-//      std::cout << "Is a letter" << std::endl;
-//    }
+
+  //cin will strip whitespace, no need here for cin >> ws
+  //Breaks out of this loop when 'Ctrl-D' pressed (for stdin)
+  //or when end of file is reached.
+  while (std::cin >> letterToEncrypt) {
+
+    //Check that input letter is only an upper case letter or
+    //a space, carriage return, horizontal tab, or newline
     if (!isupper(letterToEncrypt)) {
       if (!(letterToEncrypt == ' ')) {
         std::cout << "Invalid character." << std::endl;
@@ -106,26 +76,27 @@ int main(int argc, char **argv) {                      //Need to make a rotor ar
         return 1;
       }
     }
-    //cin >> ws;  //TODO: GETS RID OF WHITESPACE
-//    std::cout << "Entered: " << letterToEncrypt << std::endl;
+
+    //Letter will go through plugboard, rotors, reflector, back through rotors
+    //in reverse order, and then through plugboard again, before being output.
     letterToEncrypt = plugboard.map(letterToEncrypt);
-//    std::cout << "After first plugboard map: " << letterToEncrypt << std::endl;
     for (int i = 0; i < (argc - 2); i++) {
       letterToEncrypt = rotors[i].map(letterToEncrypt);
-//      std::cout << "After going through rotor " << i << ": " << letterToEncrypt << std::endl;
     }
     letterToEncrypt = reflector.map(letterToEncrypt);
-//    std::cout << "After reflector: " << letterToEncrypt << std::endl;
     for (int i = (argc - 3); i >= 0; i--) {
       letterToEncrypt = rotors[i].reverseMap(letterToEncrypt);
-//      std::cout << "After coming back through rotor " << i << ": " << letterToEncrypt << std::endl;
     }
     letterToEncrypt = plugboard.map(letterToEncrypt);
-//    std::cout << "After second plugboard map: " << letterToEncrypt << std::endl;
-//    std::cout << "Encrypted to " << letterToEncrypt << std::endl; //TODO: Take out this text
+
+    //Encrypted message printed as one line of letters, e.g. "URTYVWQUE"
     std::cout << letterToEncrypt;
 
   }
 
+  plugboard.deleteArrays();
+  for (int i = 0; i < (argc - 2); i++) {
+    rotors[i].deleteArrays();
+  }
   return 0;
 }
