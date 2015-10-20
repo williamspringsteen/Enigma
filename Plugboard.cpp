@@ -7,6 +7,7 @@
 
 const int LETTERS_IN_ALPHABET = 26;
 
+//Constructor just sets up the char[] plugboardMappings
 Plugboard::Plugboard(char* plugboardFileName) {
 
   this->plugboardMappings = new char[LETTERS_IN_ALPHABET];
@@ -14,8 +15,10 @@ Plugboard::Plugboard(char* plugboardFileName) {
   std::ifstream plugboardFile;
   plugboardFile.open(plugboardFileName);
 
+  //Set up identity mapping for all letters, will add in any other mapping
+  //later in constructor
   for (int i = 0; i < LETTERS_IN_ALPHABET; i++) {
-    plugboardMappings[i] = Mapper::convertIntToChar(i); //TODO: THIS IS WRONG, THIS WILL SWAP A AND B, C AND D, E AND F
+    plugboardMappings[i] = Mapper::convertIntToChar(i);
   }
 
   std::string firstNumInPairStr;
@@ -24,16 +27,12 @@ Plugboard::Plugboard(char* plugboardFileName) {
   int firstNumInPair;
   int secondNumInPair;
 
-  //char firstNumInPairChar;
-  //char secondNumInPairChar;
-
+  //Adds plugboard mappings that aren't identity mapping
   while ((plugboardFile >> firstNumInPairStr) && (plugboardFile >> secondNumInPairStr)) {
     std::istringstream (firstNumInPairStr) >> firstNumInPair;
     std::istringstream (secondNumInPairStr) >> secondNumInPair;
     plugboardMappings[secondNumInPair] = Mapper::convertIntToChar(firstNumInPair);
     plugboardMappings[firstNumInPair] = Mapper::convertIntToChar(secondNumInPair);
-    //firstNumInPairStr.clear();
-    //secondNumInPairStr.clear();
   }
 
 
@@ -43,6 +42,7 @@ char Plugboard::map(char input) {
   return this->plugboardMappings[Mapper::convertCharToInt(input)];
 }
 
+//Deletes the arrays declared with the 'new' keyword
 void Plugboard::deleteArrays() {
   delete[] plugboardMappings;
 }

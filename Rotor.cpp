@@ -70,6 +70,7 @@ char Rotor::reverseMap(char input) {
   return Mapper::convertIntToChar(outputNumber);
 }
 
+//Deletes the arrays declared with the 'new' keyword
 void Rotor::deleteArrays() {
   delete[] numOfLetterToMapTo;
   delete[] numOfLetterToMapToReversed;
